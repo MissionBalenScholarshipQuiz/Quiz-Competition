@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quiz Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Social Media Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #e6f0fa, #ffffff);
+            color: #1a1a1a;
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+            color: #e6e6e6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #6b48ff, #00ddeb);
+            color: white;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://source.unsplash.com/random/1280x400/?quiz') no-repeat center/cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        header .welcome {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1em;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            z-index: 1;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .user-info .user-name {
+            color: #ffd700; /* Gold for name */
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .user-info .user-symbol {
+            color: #ff6f61; /* Coral for symbol number */
+            text-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+        }
+
+        .social-links {
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-links a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 2.2em;
+            transition: transform 0.3s, filter 0.3s;
+            display: inline-block;
+            position: relative;
+        }
+
+        .social-links a::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: -1;
+        }
+
+        .social-links a:hover::after {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .social-links a:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            flex-wrap: wrap;
+        }
+
+        body.dark-mode .tabs {
+            background: #2c2c2c;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-link {
+            padding: 15px 40px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+
+        body.dark-mode .tab-link {
+            color: #e6e6e6;
+        }
+
+        .tab-link.active {
+            background: #6b48ff;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-link:hover {
+            background: #e0e7ff;
+        }
+
+        body.dark-mode .tab-link:hover {
+            background: #3a3a3a;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        body.dark-mode .tab-content {
+            background: #2c2c2c;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #6b48ff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 1.8em;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        /* Card Styles */
+        .card {
+            background: #f9f9f9;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        body.dark-mode .card {
+            background: #3a3a3a;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .start-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            color: #1a1a1a;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            animation: glow 1.8s infinite alternate;
+            transition: transform 0.3s;
+            margin-top: 20px;
+        }
+
+        .start-button:hover {
+            transform: scale(1.08);
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
+            to { box-shadow: 0 0 20px rgba(255, 215, 0, 1); }
+        }
+
+        .no-quiz {
+            font-size: 1.3em;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        body.dark-mode .no-quiz {
+            color: #aaa;
+            background: #333;
+        }
+
+        /* Results Section */
+        .congrats {
+            text-align: center;
+            font-size: 2.5em;
+            font-family: 'Montserrat', sans-serif;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .date {
+            text-align: center;
+            font-size: 1.3em;
+            color: #6b48ff;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .podium {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .podium-item {
+            text-align: center;
+            position: relative;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        body.dark-mode .podium-item {
+            background: #3a3a3a;
+        }
+
+        .podium-item:hover {
+            transform: scale(1.05);
+        }
+
+        .podium-item img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 5px solid;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .gold img { border-color: #ffd700; }
+        .silver img { border-color: #c0c0c0; }
+        .bronze img { border-color: #cd7f32; }
+
+        .medal {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3em;
+            animation: spin 4s infinite linear;
+        }
+
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        body.dark-mode table {
+            background: #3a3a3a;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        body.dark-mode th, body.dark-mode td {
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background: #6b48ff;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        tr:hover {
+            background: #e6f0fa;
+        }
+
+        body.dark-mode tr:hover {
+            background: #444;
+        }
+
+        /* Schedule List */
+        .schedule-list {
+            list-style: none;
+            display: grid;
+            gap: 15px;
+        }
+
+        .schedule-list li {
+            background: linear-gradient(45deg, #e0f7fa, #b3e5fc);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        body.dark-mode .schedule-list li {
+            background: linear-gradient(45deg, #424242, #616161);
+        }
+
+        .schedule-list li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .schedule-list li::before {
+            content: '📅';
+            position: absolute;
+            left: 15px;
+            font-size: 1.5em;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            display: none;
+        }
+
+        .confetti.active {
+            display: block;
+        }
+
+        .piece {
+            position: absolute;
+            width: 12px;
+            height: 24px;
+            background: red;
+            animation: fall 4s linear infinite;
+            border-radius: 3px;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff, #f0f4f8);
+            margin: 15% auto;
+            padding: 30px;
+            border: none;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            animation: modalPop 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .modal-content {
+            background: linear-gradient(135deg, #2c2c2c, #3a3a3a);
+            color: #e6e6e6;
+        }
+
+        .modal-content::before {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2em;
+            opacity: 0.3;
+        }
+
+        .modal-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #6b48ff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(107, 72, 255, 0.5);
+        }
+
+        .modal-content p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        body.dark-mode .modal-content p {
+            color: #e6e6e6;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 2px solid #6b48ff;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+
+        .modal button {
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #6b48ff, #00ddeb);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 10px rgba(107, 72, 255, 0.5);
+        }
+
+        .modal button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(107, 72, 255, 0.8);
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+
+            header .welcome {
+                font-size: 1em;
+            }
+
+            .user-info {
+                position: static;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .podium {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab-link {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+
+            .podium-item img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .social-links a {
+                font-size: 1.8em;
+                margin: 0 12px;
+            }
+
+            .tabs {
+                flex-direction: column;
+                padding: 5px;
+            }
+
+            .tab-link {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 40px 10px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.5em;
+            }
+
+            .modal-content p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mode-toggle" onclick="toggleMode()">🌙</div>
+
+    <header>
+        <div class="user-info" id="user-info"></div>
+        <h1>Daily Quiz Hub</h1>
+        <p class="welcome">Join the Ultimate Quiz Adventure! Test your skills, win big, and shine on the leaderboard! 🚀</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/profile.php?id=61575889414561" title="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://youtube.com/yourchannel" target="_blank" title="Watch us on YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/1234567890" target="_blank" title="Join our WhatsApp group"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </header>
+
+    <div class="tabs">
+        <div class="tab-link active" onclick="openTab('quiz')">Today's Quiz</div>
+        <div class="tab-link" onclick="openTab('results')">Quiz Results</div>
+        <div class="tab-link" onclick="openTab('schedule')">Upcoming Schedule</div>
+        <div class="tab-link" onclick="openTab('leaderboard')">Leaderboard</div>
+    </div>
+
+    <div class="container">
+        <div id="quiz" class="tab-content active">
+            <h2>Today's Quiz</h2>
+            <div class="card">
+                <p>Theme: General Knowledge Trivia</p>
+                <p>Dive into today's exciting challenge and test your brainpower!</p>
+                <!-- Edit the href daily; if no link, remove the a tag and uncomment the no-quiz p -->
+                <a href="https://example.com/daily-quiz-link" class="start-button">Start Quiz</a>
+                <!-- <p class="no-quiz">No Quiz Today! Stay tuned for tomorrow's exciting challenge!</p> -->
+            </div>
+        </div>
+
+        <div id="results" class="tab-content">
+            <h2>Quiz Results</h2>
+            <p class="date" id="result-date"></p>
+            <p class="congrats">Congratulations, Champions! 🎉</p>
+            <div class="podium">
+                <div class="podium-item gold" data-symbol="S001">
+                    <div class="medal">🏆</div>
+                    <img src="https://via.placeholder.com/140?text=Winner1" alt="Gold Winner">
+                    <p>John Doe - 95% (Symbol: S001)</p>
+                </div>
+                <div class="podium-item silver" data-symbol="S002">
+                    <div class="medal">🥈</div>
+                    <img src="https://via.placeholder.com/140?text=Winner2" alt="Silver Winner">
+                    <p>Jane Smith - 90% (Symbol: S002)</p>
+                </div>
+                <div class="podium-item bronze" data-symbol="S003">
+                    <div class="medal">🥉</div>
+                    <img src="https://via.placeholder.com/140?text=Winner3" alt="Bronze Winner">
+                    <p>Alex Johnson - 85% (Symbol: S003)</p>
+                </div>
+            </div>
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Symbol No.</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-symbol="S004"><td>4</td><td>Player 4</td><td>S004</td><td>80%</td></tr>
+                    <tr data-symbol="S005"><td>5</td><td>Player 5</td><td>S005</td><td>78%</td></tr>
+                    <tr data-symbol="S006"><td>6</td><td>Player 6</td><td>S006</td><td>75%</td></tr>
+                    <tr data-symbol="S007"><td>7</td><td>Player 7</td><td>S007</td><td>72%</td></tr>
+                    <tr data-symbol="S008"><td>8</td><td>Player 8</td><td>S008</td><td>70%</td></tr>
+                    <tr data-symbol="S009"><td>9</td><td>Player 9</td><td>S009</td><td>68%</td></tr>
+                    <tr data-symbol="S010"><td>10</td><td>Player 10</td><td>S010</td><td>65%</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="schedule" class="tab-content">
+            <h2>Upcoming Schedule</h2>
+            <ul class="schedule-list">
+                <li>September 16: Math Challenge - 10:00 AM</li>
+                <li>September 17: History Quiz - 10:00 AM</li>
+                <li>September 18: Geography Trivia - 10:00 AM</li>
+                <li>September 19: Literature Fun - 10:00 AM</li>
+                <li>September 20: Science Showdown - 10:00 AM</li>
+            </ul>
+        </div>
+
+        <div id="leaderboard" class="tab-content">
+            <h2>Top 10 Leaderboard</h2>
+            <table id="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Symbol No.</th>
+                        <th>Total Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-symbol="S001"><td>1 🏆</td><td>John Doe</td><td>S001</td><td>450</td></tr>
+                    <tr data-symbol="S002"><td>2 🥈</td><td>Jane Smith</td><td>S002</td><td>430</td></tr>
+                    <tr data-symbol="S003"><td>3 🥉</td><td>Alex Johnson</td><td>S003</td><td>410</td></tr>
+                    <tr data-symbol="S004"><td>4</td><td>Player 4</td><td>S004</td><td>390</td></tr>
+                    <tr data-symbol="S005"><td>5</td><td>Player 5</td><td>S005</td><td>370</td></tr>
+                    <tr data-symbol="S006"><td>6</td><td>Player 6</td><td>S006</td><td>350</td></tr>
+                    <tr data-symbol="S007"><td>7</td><td>Player 7</td><td>S007</td><td>330</td></tr>
+                    <tr data-symbol="S008"><td>8</td><td>Player 8</td><td>S008</td><td>310</td></tr>
+                    <tr data-symbol="S009"><td>9</td><td>Player 9</td><td>S009</td><td>290</td></tr>
+                    <tr data-symbol="S010"><td>10</td><td>Player 10</td><td>S010</td><td>270</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for User Input -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to Quiz Hub! 🚀</h2>
+            <p>Enter your details to join the adventure and track your progress!</p>
+            <input type="text" id="userName" placeholder="Your Name" required>
+            <input type="text" id="symbolNumber" placeholder="Symbol Number" required>
+            <button onclick="saveUserInfo()">Join the Fun!</button>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // User Info Management
+        let userSymbol = localStorage.getItem('symbolNumber');
+
+        function showModal() {
+            document.getElementById('userModal').style.display = 'block';
+        }
+
+        function saveUserInfo() {
+            const name = document.getElementById('userName').value;
+            const symbol = document.getElementById('symbolNumber').value;
+            if (name && symbol) {
+                localStorage.setItem('userName', name);
+                localStorage.setItem('symbolNumber', symbol);
+                userSymbol = symbol;
+                displayUserInfo();
+                document.getElementById('userModal').style.display = 'none';
+                highlightUserEntries();
+            } else {
+                alert('Please fill in both fields.');
+            }
+        }
+
+        function displayUserInfo() {
+            const name = localStorage.getItem('userName');
+            const symbol = localStorage.getItem('symbolNumber');
+            if (name && symbol) {
+                document.getElementById('user-info').innerHTML = 
+                    `Welcome, <span class="user-name">${name}</span> (<span class="user-symbol">Symbol: ${symbol}</span>)`;
+            }
+        }
+
+        // Highlight User in Results and Leaderboard
+        function highlightUserEntries() {
+            if (!userSymbol) return;
+
+            // Podium
+            const podiumItems = document.querySelectorAll('.podium-item');
+            podiumItems.forEach(item => {
+                if (item.dataset.symbol === userSymbol) {
+                    const p = item.querySelector('p');
+                    p.innerHTML += ' <span style="color: #ffd700; font-weight: bold;">(You)</span>';
+                }
+            });
+
+            // Results Table
+            const resultsRows = document.querySelectorAll('#results-table tbody tr');
+            resultsRows.forEach(row => {
+                if (row.dataset.symbol === userSymbol) {
+                    const nameCell = row.querySelector('td:nth-child(2)');
+                    nameCell.innerHTML += ' <span style="color: #ffd700; font-weight: bold;">(You)</span>';
+                }
+            });
+
+            // Leaderboard Table
+            const leaderboardRows = document.querySelectorAll('#leaderboard-table tbody tr');
+            leaderboardRows.forEach(row => {
+                if (row.dataset.symbol === userSymbol) {
+                    const nameCell = row.querySelector('td:nth-child(2)');
+                    nameCell.innerHTML += ' <span style="color: #ffd700; font-weight: bold;">(You)</span>';
+                }
+            });
+        }
+
+        // Check on load
+        document.addEventListener('DOMContentLoaded', () => {
+            displayUserInfo();
+            if (!localStorage.getItem('symbolNumber')) {
+                showModal();
+            } else {
+                highlightUserEntries();
+            }
+
+            const dateElement = document.getElementById('result-date');
+            const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            dateElement.textContent = `Results for ${currentDate}`;
+        });
+
+        // Tab Functionality
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+
+            const links = document.querySelectorAll('.tab-link');
+            links.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Trigger confetti on results tab
+            if (tabName === 'results') {
+                createConfetti();
+            }
+        }
+
+        // Dark/Light Mode Toggle
+        function toggleMode() {
+            document.body.classList.toggle('dark-mode');
+            const toggle = document.querySelector('.mode-toggle');
+            toggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
+
+        // Confetti Animation
+        function createConfetti() {
+            const confetti = document.getElementById('confetti');
+            confetti.classList.add('active');
+            for (let i = 0; i < 200; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('piece');
+                piece.style.left = `${Math.random() * 100}vw`;
+                piece.style.animationDelay = `${Math.random() * 4}s`;
+                piece.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                piece.style.width = `${Math.random() * 12 + 6}px`;
+                piece.style.height = `${Math.random() * 24 + 12}px`;
+                confetti.appendChild(piece);
+            }
+            setTimeout(() => {
+                confetti.classList.remove('active');
+                confetti.innerHTML = '';
+            }, 6000);
+        }
+    </script>
